@@ -1,7 +1,7 @@
 <?php
 
 if (!function_exists('httpStatusCodeError')) {
-    function httpStatusCodeError(int $statusCode = 0)
+    function httpStatusCodeError($statusCode = 0)
     {
         $statusCodeErrors = [
             400, 401, 403, 404, 405, 406, 407, 408, 409,

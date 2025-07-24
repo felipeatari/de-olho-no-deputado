@@ -14,12 +14,14 @@ class Deputado extends Model
 
     protected $fillable = [
         'id',
+        'uri',
         'nome',
         'sigla_partido',
+        'uri_partido',
         'sigla_uf',
-        'uri_foto',
+        'id_legislatura',
+        'url_foto',
         'email',
-        'data_cadastro',
     ];
 
     public function despesas(): HasMany

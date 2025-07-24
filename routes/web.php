@@ -4,18 +4,15 @@ use App\Http\Controllers\DeputadoController;
 use App\Http\Controllers\DespesaController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [DeputadoController::class, 'getAllApi'])->name('deputados.home');
 
 Route::group(['prefix' => 'deputados', 'as' => 'deputados.'], function () {
     Route::get('/', [DeputadoController::class, 'index'])->name('index');
-    Route::get('/create', [DeputadoController::class, 'create'])->name('create');
-    Route::post('/', [DeputadoController::class, 'store'])->name('store');
+    Route::post('/sync', [DeputadoController::class, 'sync'])->name('sync');
 });
 Route::group(['prefix' => 'deputado', 'as' => 'deputado.'], function () {
-    Route::get('/{idx}', [DeputadoController::class, 'show'])->name('show');
-    Route::put('/{idx}', [DeputadoController::class, 'update'])->name('update');
+    Route::get('/{id}', [DeputadoController::class, 'show'])->name('show');
+    Route::delete('/{id}', [DeputadoController::class, 'destroy'])->name('destroy');
 });
 
 Route::group(['prefix' => 'despesas', 'as' => 'despesas.'], function () {

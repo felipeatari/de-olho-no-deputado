@@ -133,7 +133,7 @@ class DeputadoRepository
         DB::beginTransaction();
 
         try {
-            $deputado = $this->findById($id);
+            $deputado = $this->getById($id);
             $deputado->delete();
 
             DB::commit();

@@ -13,10 +13,13 @@ return new class extends Migration
     {
         Schema::create('deputados', function (Blueprint $table) {
             $table->unsignedBigInteger('id')->primary();
+            $table->string('uri')->nullable(); // link da API do deputado
             $table->string('nome');
-            $table->string('sigla_partido', 10)->nullable();
+            $table->string('sigla_partido', 30)->nullable();
+            $table->string('uri_partido')->nullable(); // link da API do partido
             $table->string('sigla_uf', 5)->nullable();
-            $table->string('uri_foto')->nullable();
+            $table->unsignedInteger('id_legislatura')->nullable();
+            $table->string('url_foto')->nullable();
             $table->string('email')->nullable();
             $table->timestamps();
         });
