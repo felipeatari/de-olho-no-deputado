@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SearchDespesasApiDeputadoJob;
+use App\Services\DespesaApiService;
 use App\Services\DespesaService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -10,67 +12,29 @@ class DespesaController extends Controller
 {
     public function __construct(
         protected DespesaService $despesaService,
+        protected DespesaApiService $despesaApiService,
     )
     {
     }
 
-    public function getAllApi(Request $request)
+    public function sync(Request $request)
     {
-        $filter = [
-            'pagina' => $request->get('pagina', 1),
-            'itens' => $request->get('itens', 5),
-            'ordem' => $request->get('ordem', 'ASC'),
-            'ordenarPor' => $request->get('ordenarPor', 'nome'),
-        ];
+        $deputadoId = $request->get('deputado_id', null);
 
-        if ($request->filled('nome')) {
-            $filter['nome'] = $request->get('nome');
+        if (!Cache::lock("importando-despesas-{$deputadoId}", 60)->get()) {
+            return redirect()->back()->with('warning', 'A sincronização deste deputado já está em andamento.');
         }
 
-        if ($request->filled('siglaPartido')) {
-            $filter['siglaPartido'] = $request->get('siglaPartido');
-        }
+        SearchDespesasApiDeputadoJob::dispatch($deputadoId);
 
-        if ($request->filled('siglaUf')) {
-            $filter['siglaUf'] = $request->get('siglaUf');
-        }
-
-        // Gera uma chave única para o filtro atual
-        $cacheKey = 'despesas_api_' . md5(json_encode($filter));
-
-        // Tenta recuperar do cache, senão busca da API e salva por 10 minutos (600 segundos)
-        $despesas = Cache::remember($cacheKey, 600, function() use($filter) {
-            return $this->deputadoApiService->all($filter);
-        });
-
-        $links = collect($despesas['links'])->keyBy('rel');
-
-        return view('despesas/home', [
-            'despesas' => $despesas['dados'] ?? [],
-            'filter' => $filter,
-            'links' => $links,
-        ]);
-    }
-
-    public function sync(DeputadoRequest $request)
-    {
-        $data = $request->validated();
-
-        $this->despesaService->create($data);
-
-        if ($this->despesaService->status() === 'error') {
-            return redirect()->back()->with('error', $this->despesaService->message());
-        }
-
-        return redirect()->back()->with('success', 'Deputado sincronizado com sucesso.');
+        return redirect()->back()->with('success', 'Sincronização iniciada. As despesas serão processadas em segundo plano.');
     }
 
     public function index(Request $request)
     {
-         $filter = [
+        $filter = [
             'pagina' => $request->get('pagina', 1),
             'ordem' => $request->get('ordem', 'ASC'),
-            'ordenar_por' => $request->get('ordenarPor', 'nome'),
         ];
 
         if ($request->filled('nome')) {
@@ -110,26 +74,28 @@ class DespesaController extends Controller
 
     public function show($id = null)
     {
-        $deputado = $this->despesaService->getById($id);
+        $despesa = $this->despesaService->getById($id);
         $backUrl = session('despesas_back_url', route('despesas.index'));
 
-        if ($this->despesaService->status() === 'error') $deputado = [];
+        if ($despesa->status() === 'error') {
+            return redirect($backUrl);
+        }
 
         return view('despesas.show', [
-            'deputado' => $deputado ?? [],
+            'despesa' => $despesa->data(),
             'backUrl' => $backUrl
         ]);
     }
 
     public function destroy($id = null)
     {
-        $deputado = $this->despesaService->delete($id);
+        $despesa = $this->despesaService->delete($id);
         $backUrl = session('despesas_back_url', route('despesas.index'));
 
         if ($this->despesaService->status() === 'error') {
             return redirect()->back()->with('error', $this->despesaService->message());
         }
 
-        return redirect()->back()->with('success', 'Deputado removido com sucesso.');
+        return redirect()->back()->with('success', 'Despesa removido com sucesso.');
     }
 }

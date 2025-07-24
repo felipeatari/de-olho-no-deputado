@@ -42,7 +42,7 @@ class DeputadoController extends Controller
         // Gera uma chave única para o filtro atual
         $cacheKey = 'deputados_api_' . md5(json_encode($filter));
 
-        // Tenta recuperar do cache, senão busca da API e salva por 10 minutos (600 segundos)
+        // Tenta recuperar do cache, senão busca na API e salva por 10 minutos (600 segundos)
         $deputados = Cache::remember($cacheKey, 600, function() use($filter) {
             return $this->deputadoApiService->all($filter);
         });
@@ -119,10 +119,12 @@ class DeputadoController extends Controller
         $deputado = $this->deputadoService->getById($id);
         $backUrl = session('deputados_back_url', route('deputados.index'));
 
-        if ($this->deputadoService->status() === 'error') $deputado = [];
+        if ($deputado->status() === 'error') {
+            return redirect($backUrl);
+        }
 
         return view('deputados.show', [
-            'deputado' => $deputado ?? [],
+            'deputado' => $deputado->data(),
             'backUrl' => $backUrl
         ]);
     }
@@ -135,6 +137,8 @@ class DeputadoController extends Controller
         if ($this->deputadoService->status() === 'error') {
             return redirect()->back()->with('error', $this->deputadoService->message());
         }
+
+        Cache::tags('deputados_db')->flush();
 
         return redirect()->back()->with('success', 'Deputado removido com sucesso.');
     }

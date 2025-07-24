@@ -1,6 +1,6 @@
 <x-layout.app>
     <div class="min-h-screen bg-gray-100 px-4 py-6">
-        <div class="max-w-6xl mx-auto">
+        <div class="mx-auto">
             <h1 class="text-3xl font-bold text-green-700 mb-4">Despesas (Sincronizados)</h1>
 
             <div class="overflow-x-auto bg-white shadow-md rounded-lg">

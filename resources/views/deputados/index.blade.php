@@ -1,6 +1,6 @@
 <x-layout.app>
     <div class="min-h-screen bg-gray-100 px-4 py-6">
-        <div class="max-w-6xl mx-auto">
+        <div class="mx-auto">
             <h1 class="text-3xl font-bold text-green-700 mb-4">Deputados (Sincronizados)</h1>
 
             <div class="overflow-x-auto bg-white shadow-md rounded-lg">
@@ -64,7 +64,8 @@
                                     <a href="{{ route('deputado.show', ['id' => $deputado['id']]) }}">
                                         <button
                                             type="button"
-                                            class="inline-flex items-center justify-center px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded hover:bg-blue-700 transition">
+                                            class="inline-flex items-center justify-center px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded hover:bg-blue-700 transition"
+                                        >
                                             Ver Dados
                                         </button>
                                     </a>
@@ -74,15 +75,21 @@
                                         <input type="hidden" name="id" value="{{ $deputado['id'] }}">
                                         <button
                                             type="submit"
-                                            class="inline-flex items-center justify-center mx-2 px-3 py-1.5 bg-red-600 text-white text-xs font-medium rounded hover:bg-red-700 transition">
+                                            class="inline-flex items-center justify-center mx-2 px-3 py-1.5 bg-red-600 text-white text-xs font-medium rounded hover:bg-red-700 transition"
+                                        >
                                             Remover
                                         </button>
                                     </form>
-                                    <button
-                                        type="button"
-                                        class="inline-flex items-center justify-center px-3 py-1.5 bg-green-600 text-white text-xs font-medium rounded hover:bg-green-700 transition">
-                                        Sync Despesas
-                                    </button>
+                                    <form method="POST" action="{{ route('despesas.sync') }}">
+                                        @csrf
+                                        <input type="hidden" name="deputado_id" value="{{ $deputado['id'] }}">
+                                        <button
+                                            type="submit"
+                                            class="inline-flex items-center justify-center px-3 py-1.5 bg-green-600 text-white text-xs font-medium rounded hover:bg-green-700 transition"
+                                        >
+                                            Sync Despesas
+                                        </button>
+                                    </form>
                                 </td>
                             </tr>
                         @empty

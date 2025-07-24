@@ -9,7 +9,7 @@ use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Psr7\Message;
 use Illuminate\Support\Facades\Log;
 
-class DeputadoApiService extends Service
+class DespesaApiService extends Service
 {
     private readonly Client $client;
 
@@ -22,11 +22,11 @@ class DeputadoApiService extends Service
         ]);
     }
 
-    public function all($filter = [])
+    public function all($filter = [], $deputadoId = null)
     {
         try {
-            $response = retry(3, function () use ($filter) {
-                return $this->client->get('deputados', [
+            $response = retry(3, function () use ($filter, $deputadoId) {
+                return $this->client->get('deputados/' . $deputadoId . '/despesas', [
                     'query' => $filter,
                 ]);
             }, 300); // 3 tentativas, 300ms intervalo
