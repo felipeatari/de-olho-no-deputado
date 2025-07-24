@@ -32,7 +32,7 @@ class DeputadoRepository
             };
         endforeach;
 
-        return $query->orderByDesc('id');
+        return $query;
     }
 
     public function getAll(array $filters = [], $perPage = 10, $columns = [])
@@ -125,7 +125,6 @@ class DeputadoRepository
 
             throw $exception;
         }
-
     }
 
     public function delete($id)

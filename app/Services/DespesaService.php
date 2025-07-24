@@ -14,17 +14,12 @@ class DespesaService extends Service
     {
     }
 
-    protected function repository(): mixed
-    {
-        return $this->despesaRepository;
-    }
-
     public function getAll(array $filter = [], $perPage = 10, array $columns = [])
     {
         try {
-            $data = $this->despesaRepository->getAll($filter, $perPage, $columns);
+            $this->data = $this->despesaRepository->getAll($filter, $perPage, $columns);
 
-            return $data;
+            return $this;
         } catch (ModelNotFoundException $exception) {
             return $this->exception($exception, 'Despesa(s) não encontrada(s).');
         } catch (Exception $exception) {
@@ -35,9 +30,9 @@ class DespesaService extends Service
     public function getOne(array $filter = [], array $columns = [])
     {
         try {
-            $despesa = $this->despesaRepository->getOne($filter, $columns);
+            $this->data = $this->despesaRepository->getOne($filter, $columns);
 
-            return $despesa;
+            return $this;
         } catch (ModelNotFoundException $exception) {
             return $this->exception($exception, 'Despesa não encontrada.');
         } catch (Exception $exception) {
@@ -48,9 +43,9 @@ class DespesaService extends Service
     public function getById(?int $id = null)
     {
         try {
-            $despesa = $this->despesaRepository->getById($id);
+            $this->data = $this->despesaRepository->getById($id);
 
-            return $despesa;
+            return $this;
         } catch (ModelNotFoundException $exception) {
             return $this->exception($exception, 'Despesa não encontrada.');
         } catch (Exception $exception) {
@@ -61,7 +56,8 @@ class DespesaService extends Service
     public function create(array $data)
     {
         try {
-            $despesa = $this->despesaRepository->create($data);
+            $this->data = $this->despesaRepository->create($data);
+
             $this->code = 201;
 
             return $despesa;
@@ -73,9 +69,9 @@ class DespesaService extends Service
     public function update(?int $id = null, array $data = [])
     {
         try {
-            $despesa = $this->despesaRepository->update($id, $data);
+            $this->data = $this->despesaRepository->update($id, $data);
 
-            return $despesa;
+            return $this;
         } catch (ModelNotFoundException $exception) {
             return $this->exception($exception, 'Despesa não encontrada.');
         } catch (Exception $exception) {
@@ -88,7 +84,9 @@ class DespesaService extends Service
         try {
             $this->despesaRepository->delete($id);
 
-            return true;
+            $this->data = true;
+
+            return $this;
         } catch (ModelNotFoundException $exception) {
             return $this->exception($exception, 'Despesa não encontrada.');
         } catch (Exception $exception) {

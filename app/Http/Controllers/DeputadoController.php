@@ -7,6 +7,7 @@ use App\Services\DeputadoApiService;
 use App\Services\DeputadoService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Redis;
 
 class DeputadoController extends Controller
 {
@@ -65,6 +66,8 @@ class DeputadoController extends Controller
             return redirect()->back()->with('error', $this->deputadoService->message());
         }
 
+        Cache::tags('deputados_db')->flush();
+
         return redirect()->back()->with('success', 'Deputado sincronizado com sucesso.');
     }
 
@@ -92,16 +95,22 @@ class DeputadoController extends Controller
 
         $columns = ['id', 'nome', 'url_foto', 'sigla_uf', 'sigla_partido'];
 
-        $deputados = $this->deputadoService->getAll($filter, $pearPage, $columns);
+        // Gera uma chave única para o filtro atual
+        $cacheKey = 'deputados_db_' . md5(json_encode($filter));
+
+        // Tenta recuperar do cache, senão busca no MySQL e salva por 10 minutos (600 segundos)
+        $deputados = Cache::tags('deputados_db')->remember($cacheKey, 600, function() use($filter, $pearPage, $columns) {
+            return $this->deputadoService->getAll($filter, $pearPage, $columns);
+        });
+
+        if ($deputados->status() === 'error') $deputados = [];
 
         // Armazena a URL atual para redirecionar o usuário de volta após uma ação
         session()->put('deputados_back_url', url()->full());
 
-        if ($this->deputadoService->status() === 'error') $deputados = [];
-
         return view('deputados.index', [
-            'filter' => $filter ?? [],
-            'deputados' => $deputados ?? [],
+            'filter' => $filter,
+            'deputados' => $deputados->data(),
         ]);
     }
 

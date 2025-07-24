@@ -31,10 +31,10 @@ class DespesaRepository
             };
         endforeach;
 
-        return $query->orderByDesc('id');
+        return $query;
     }
 
-    public function getAll(array $filters = [], $perPage = 10, $columns = [])
+    public function getAll(array $filters = [], $perPage = 10, $columns = [], $orderBy = '')
     {
         try {
             $query = Despesa::query();

@@ -10,6 +10,7 @@ abstract class Service
     protected string $status = 'success';
     protected string $message = '';
     protected int|string $code = 200;
+    protected mixed $data = null;
 
     protected function exception($exception, string $notFoundMessage = ''): self
     {
@@ -40,5 +41,10 @@ abstract class Service
     public function message(): string
     {
         return $this->message;
+    }
+
+    public function data(): mixed
+    {
+        return $this->data;
     }
 }

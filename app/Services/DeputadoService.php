@@ -14,17 +14,12 @@ class DeputadoService extends Service
     {
     }
 
-    protected function repository(): mixed
-    {
-        return $this->deputadoRepository;
-    }
-
     public function getAll(array $filter = [], $perPage = 10, array $columns = [])
     {
         try {
-            $data = $this->deputadoRepository->getAll($filter, $perPage, $columns);
+            $this->data = $this->deputadoRepository->getAll($filter, $perPage, $columns);
 
-            return $data;
+            return $this;
         } catch (ModelNotFoundException $exception) {
             return $this->exception($exception, 'Deputado(s) não encontrado(s).');
         } catch (Exception $exception) {
@@ -35,9 +30,9 @@ class DeputadoService extends Service
     public function getOne(array $filter = [], array $columns = [])
     {
         try {
-            $deputado = $this->deputadoRepository->getOne($filter, $columns);
+            $this->data = $this->deputadoRepository->getOne($filter, $columns);
 
-            return $deputado;
+            return $this;
         } catch (ModelNotFoundException $exception) {
             return $this->exception($exception, 'Deputado não encontrado.');
         } catch (Exception $exception) {
@@ -48,9 +43,9 @@ class DeputadoService extends Service
     public function getById(?int $id = null)
     {
         try {
-            $deputado = $this->deputadoRepository->getById($id);
+            $this->data = $this->deputadoRepository->getById($id);
 
-            return $deputado;
+            return $this;
         } catch (ModelNotFoundException $exception) {
             return $this->exception($exception, 'Deputado não encontrado.');
         } catch (Exception $exception) {
@@ -61,10 +56,11 @@ class DeputadoService extends Service
     public function create(array $data)
     {
         try {
-            $deputado = $this->deputadoRepository->create($data);
+            $this->data = $this->deputadoRepository->create($data);
+
             $this->code = 201;
 
-            return $deputado;
+            return $this;
         } catch (Exception $exception) {
             return $this->exception($exception);
         }
@@ -73,9 +69,9 @@ class DeputadoService extends Service
     public function update(?int $id = null, array $data = [])
     {
         try {
-            $deputado = $this->deputadoRepository->update($id, $data);
+            $this->data = $this->deputadoRepository->update($id, $data);
 
-            return $deputado;
+            return $this;
         } catch (ModelNotFoundException $exception) {
             return $this->exception($exception, 'Deputado não encontrado.');
         } catch (Exception $exception) {
@@ -88,7 +84,9 @@ class DeputadoService extends Service
         try {
             $this->deputadoRepository->delete($id);
 
-            return true;
+            $this->data = true;
+
+            return $this;
         } catch (ModelNotFoundException $exception) {
             return $this->exception($exception, 'Deputado não encontrado.');
         } catch (Exception $exception) {
