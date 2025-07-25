@@ -43,9 +43,17 @@ class DeputadoController extends Controller
         $cacheKey = 'deputados_api_' . md5(json_encode($filter));
 
         // Tenta recuperar do cache, senão busca na API e salva por 10 minutos (600 segundos)
-        $deputados = Cache::remember($cacheKey, 600, function() use($filter) {
-            return $this->deputadoApiService->all($filter);
-        });
+        if (!Cache::has($cacheKey)) {
+            $deputados = $this->deputadoApiService->all($filter);
+
+            if ($this->deputadoApiService->status() === 'error') {
+                return redirect()->back()->with('error', $this->deputadoApiService->message());
+            }
+
+            Cache::put($cacheKey, $deputados, 600);
+        } else {
+            $deputados = Cache::get($cacheKey);
+        }
 
         $links = collect($deputados['links'])->keyBy('rel');
 
@@ -76,19 +84,19 @@ class DeputadoController extends Controller
          $filter = [
             'pagina' => $request->get('pagina', 1),
             'ordem' => $request->get('ordem', 'ASC'),
-            'ordenar_por' => $request->get('ordenarPor', 'nome'),
+            'ordenar_por' => $request->get('ordenar_por', 'nome'),
         ];
 
         if ($request->filled('nome')) {
             $filter['nome'] = $request->get('nome');
         }
 
-        if ($request->filled('siglaPartido')) {
-            $filter['sigla_partido'] = $request->get('siglaPartido');
+        if ($request->filled('sigla_partido')) {
+            $filter['sigla_partido'] = $request->get('sigla_partido');
         }
 
-        if ($request->filled('siglaUf')) {
-            $filter['sigla_uf'] = $request->get('siglaUf');
+        if ($request->filled('sigla_uf')) {
+            $filter['sigla_uf'] = $request->get('sigla_uf');
         }
 
         $pearPage = $request->get('itens', 5);
@@ -103,14 +111,12 @@ class DeputadoController extends Controller
             return $this->deputadoService->getAll($filter, $pearPage, $columns);
         });
 
-        if ($deputados->status() === 'error') $deputados = [];
-
         // Armazena a URL atual para redirecionar o usuário de volta após uma ação
         session()->put('deputados_back_url', url()->full());
 
         return view('deputados.index', [
             'filter' => $filter,
-            'deputados' => $deputados->data(),
+            'deputados' => $deputados->data() ?? [],
         ]);
     }
 

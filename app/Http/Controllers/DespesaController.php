@@ -27,6 +27,8 @@ class DespesaController extends Controller
 
         SearchDespesasApiDeputadoJob::dispatch($deputadoId);
 
+        Cache::tags('despesas_db')->flush();
+
         return redirect()->back()->with('success', 'Sincronização iniciada. As despesas serão processadas em segundo plano.');
     }
 
@@ -41,34 +43,37 @@ class DespesaController extends Controller
             $filter['nome'] = $request->get('nome');
         }
 
-        if ($request->filled('siglaPartido')) {
-            $filter['sigla_partido'] = $request->get('siglaPartido');
+        if ($request->filled('deputado')) {
+            $filter['deputado'] = $request->get('deputado');
         }
 
-        if ($request->filled('siglaUf')) {
-            $filter['sigla_uf'] = $request->get('siglaUf');
+        if ($request->filled('tipo_despesa')) {
+            $filter['tipo_despesa'] = $request->get('tipo_despesa');
         }
 
-        $pearPage = $request->get('itens', 5);
+        if ($request->filled('valor_documento')) {
+            $filter['valor_documento'] = $request->get('valor_documento');
+        }
 
-        $columns = ['id', 'nome', 'url_foto', 'sigla_uf', 'sigla_partido'];
+        $pearPage = $request->get('itens', 10);
+
+        $columns = ['id', 'deputado', 'tipo_despesa', 'valor_documento'];
 
         // Gera uma chave única para o filtro atual
         $cacheKey = 'despesas_db_' . md5(json_encode($filter));
 
         // Tenta recuperar do cache, senão busca no MySQL e salva por 10 minutos (600 segundos)
-        $despesas = Cache::remember($cacheKey, 600, function() use($filter, $pearPage, $columns) {
-            return $this->despesaService->getAll($filter, $pearPage, $columns);
-        });
-
-        if ($despesas->status() === 'error') $despesas = [];
+        // $despesas = Cache::tags('despesas_db')->remember($cacheKey, 600, function() use($filter, $pearPage) {
+        //     return $this->despesaService->getAll($filter, $pearPage);
+        // });
+        $despesas = $this->despesaService->getAll($filter, $pearPage);
 
         // Armazena a URL atual para redirecionar o usuário de volta após uma ação
         session()->put('despesas_back_url', url()->full());
 
         return view('despesas.index', [
             'filter' => $filter,
-            'despesas' => $despesas,
+            'despesas' => $despesas->data() ?? [],
         ]);
     }
 
@@ -95,6 +100,8 @@ class DespesaController extends Controller
         if ($this->despesaService->status() === 'error') {
             return redirect()->back()->with('error', $this->despesaService->message());
         }
+
+        Cache::tags('despesas_db')->flush();
 
         return redirect()->back()->with('success', 'Despesa removido com sucesso.');
     }

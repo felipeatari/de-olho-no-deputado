@@ -1,6 +1,6 @@
 <x-layout.app>
     <div class="min-h-screen bg-gray-100 px-4 py-6">
-        <div class="max-w-6xl mx-auto">
+        <div class="mx-auto">
             <h1 class="text-3xl font-bold text-green-700 mb-4">Deputados (Dados Abertos)</h1>
 
             <div class="overflow-x-auto bg-white shadow-md rounded-lg">
@@ -34,13 +34,15 @@
                                         class="w-full px-2 py-1 border border-gray-300 rounded text-sm text-center focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 </td>
                                 <td class="px-4 py-2 text-center align-middle">
-                                    <button type="submit"
-                                        class="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition">
+                                    <button
+                                        type="submit"
+                                        class="px-3 py-1 bg-yellow-600 text-white text-sm rounded hover:bg-yellow-700 transition"
+                                    >
                                         Filtrar
                                     </button>
                                     <a
                                         href="{{ route('deputados.home') }}"
-                                        class="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition"
+                                        class="px-3 py-1 bg-gray-600 text-white text-sm rounded hover:bg-gray-700 transition"
                                     >
                                         <button type="button">
                                             Limpar
@@ -111,8 +113,10 @@
                                                 @endphp
 
                                                 @if ($rel !== 'self')
-                                                    <a href="{{ route('deputados.home', explode('&', parse_url($link['href'], PHP_URL_QUERY))) }}"
-                                                    class="inline-block px-3 py-1 bg-white border border-gray-300 text-gray-700 rounded hover:bg-gray-200 transition">
+                                                    <a
+                                                        href="{{ route('deputados.home', explode('&', parse_url($link['href'], PHP_URL_QUERY))) }}"
+                                                        class="inline-block px-3 py-1 bg-white border border-gray-300 text-gray-700 rounded hover:bg-gray-200 transition"
+                                                    >
                                                         {{ $label }}
                                                     </a>
                                                 @else

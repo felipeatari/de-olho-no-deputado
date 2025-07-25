@@ -15,10 +15,10 @@
                         </tr>
                         <tr class="bg-white border-b-gray-200">
                             <form>
-                                <input type="hidden" name="pagina" value="{{ request()->get('pagina', 1) }}">
-                                <input type="hidden" name="itens" value="{{ request()->get('itens', 5) }}">
-                                <input type="hidden" name="ordem" value="{{ request()->get('ordem', 'ASC') }}">
-                                <input type="hidden" name="ordenarPor" value="{{ request()->get('ordenarPor', 'nome') }}">
+                                <input type="hidden" name="pagina" value="{{ $filter['pagina'] ?? 1 }}">
+                                <input type="hidden" name="itens" value="{{ $filter['itens'] ?? 5 }}">
+                                <input type="hidden" name="ordem" value="{{ $filter['ordem'] ?? 'ASC' }}">
+                                <input type="hidden" name="ordenar_por" value="{{ $filter['ordenar_por'] ?? 'nome' }}">
 
                                 <td class="px-4 py-2 text-center align-middle">-</td>
                                 <td class="px-4 py-2 text-center align-middle">
@@ -26,21 +26,21 @@
                                         class="w-full px-2 py-1 border border-gray-300 rounded text-sm text-center focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 </td>
                                 <td class="px-4 py-2 text-center align-middle">
-                                    <input type="text" name="siglaPartido" value="{{ $filter['siglaPartido'] ?? '' }}"
+                                    <input type="text" name="sigla_partido" value="{{ $filter['sigla_partido'] ?? '' }}"
                                         class="w-full px-2 py-1 border border-gray-300 rounded text-sm text-center focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 </td>
                                 <td class="px-4 py-2 text-center align-middle">
-                                    <input type="text" name="siglaUf" value="{{ $filter['siglaUf'] ?? '' }}"
+                                    <input type="text" name="sigla_uf" value="{{ $filter['sigla_uf'] ?? '' }}"
                                         class="w-full px-2 py-1 border border-gray-300 rounded text-sm text-center focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 </td>
                                 <td class="px-4 py-2 text-center align-middle">
                                     <button type="submit"
-                                        class="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition">
+                                        class="px-3 py-1 bg-yellow-600 text-white text-sm rounded hover:bg-yellow-700 transition">
                                         Filtrar
                                     </button>
                                     <a
                                         href="{{ route('deputados.index') }}"
-                                        class="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition"
+                                        class="px-3 py-1 bg-gray-600 text-white text-sm rounded hover:bg-gray-700 transition"
                                     >
                                         <button type="button">
                                             Limpar
@@ -103,7 +103,7 @@
                     @if ($deputados)
                         <tfoot>
                             <tr>
-                                <td class="px-3 py-3" colspan="2">
+                                <td class="px-3 py-3" colspan="5">
                                     <div class="flex justify-center text-yellow-600">
                                         {{ $deputados->links() }}
                                     </div>

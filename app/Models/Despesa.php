@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Despesa extends Model
 {
     protected $table = 'despesas';
+    public $timestamps = false;
 
     protected $fillable = [
         'deputado_id',
@@ -25,7 +26,13 @@ class Despesa extends Model
         'cnpj_cpf_fornecedor',
         'parcela',
         'url_documento',
-        'data_cadastro',
+    ];
+
+    protected $casts = [
+        'data_documento' => 'date',
+        'valor_documento' => 'decimal:2',
+        'valor_glosa' => 'decimal:2',
+        'valor_liquido' => 'decimal:2',
     ];
 
     public function deputado(): BelongsTo

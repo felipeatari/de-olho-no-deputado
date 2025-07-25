@@ -34,10 +34,10 @@ class SearchDespesasApiDeputadoJob implements ShouldQueue
             $despesas = $resposta['dados'] ?? [];
             $links = $resposta['links'] ?? [];
 
-            foreach ($despesas as $despesa) {
+            foreach ($despesas as $despesa):
                 $despesa['deputado_id'] = $this->deputadoId;
-                // ProcessarDespesa::dispatch($despesa);
-            }
+                SaveDespesasApiDeputadoDBJob::dispatch($despesa);
+            endforeach;
 
             $temProximaPagina = collect($links)->contains(fn ($link) => $link['rel'] === 'next');
             $pagina++;

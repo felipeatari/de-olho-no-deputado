@@ -24,6 +24,19 @@
     </script>
 @endif
 
+@if(session('warning'))
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Atenção!',
+                text: '{{ session('warning') }}',
+                confirmButtonColor: '#d33',
+            });
+        });
+    </script>
+@endif
+
 @if ($errors->any())
     <script>
         document.addEventListener('DOMContentLoaded', () => {

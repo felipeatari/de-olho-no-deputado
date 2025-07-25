@@ -4,16 +4,16 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@yield('title', 'Sistema de Deputados')</title>
+    <title>@yield('title', 'De Olho No Deputado')</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-gray-100 text-gray-800">
 
     <header class="bg-green-700 text-white shadow">
         <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-            <h1 class="text-xl font-semibold">Sistema de Deputados</h1>
+            <h1 class="font-semibold">De Olho No Deputado</h1>
             <nav>
-                <ul class="flex space-x-4 text-sm">
+                <ul class="flex space-x-4 text-sm font-semibold">
                     <li><a href="{{ route('deputados.home') }}" class="hover:underline">Home</a></li>
                     <li><a href="{{ route('deputados.index') }}" class="hover:underline">Deputados</a></li>
                     <li><a href="{{ route('despesas.index') }}" class="hover:underline">Despesas</a></li>
@@ -30,7 +30,7 @@
 
     <footer class="bg-gray-200 text-gray-600 py-4 mt-10">
         <div class="container mx-auto px-4 text-center text-sm">
-            &copy; {{ date('Y') }} Sistema de Deputados. Dados fornecidos pela API da Câmara dos Deputados.
+            &copy; {{ date('Y') }} De Olho No Deputado. Dados fornecidos pela API da Câmara dos Deputados.
         </div>
     </footer>
 </body>

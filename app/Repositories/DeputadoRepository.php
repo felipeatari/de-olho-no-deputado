@@ -43,7 +43,7 @@ class DeputadoRepository
 
             if (! $columns) $columns = ['*'];
 
-            $data = $query->paginate($perPage, $columns, 'pagina');
+            $data = $query->paginate($perPage, $columns, 'pagina')->appends(request()->query());
 
             if (! $data->count()) throw new ModelNotFoundException('Not Found.', 404);
 

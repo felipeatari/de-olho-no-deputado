@@ -60,7 +60,7 @@ class DespesaService extends Service
 
             $this->code = 201;
 
-            return $despesa;
+            return $this;
         } catch (Exception $exception) {
             return $this->exception($exception);
         }

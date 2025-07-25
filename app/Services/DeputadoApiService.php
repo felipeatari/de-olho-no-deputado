@@ -37,8 +37,6 @@ class DeputadoApiService extends Service
         } catch (ClientException $exception) {
             return $this->exception($exception);
         } catch(ConnectException $exception) {
-            Log::warning('Erro de conexão com API da Câmara: ' . $e->getMessage());
-
             return $this->exception($exception);
         } catch(Exception $exception) {
             return $this->exception($exception);
