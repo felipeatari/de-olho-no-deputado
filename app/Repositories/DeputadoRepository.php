@@ -32,7 +32,7 @@ class DeputadoRepository
             };
         endforeach;
 
-        return $query->orderByDesc('nome');
+        return $query->orderBy('nome');
     }
 
     public function getAll(array $filters = [], $perPage = 10, $columns = [])
