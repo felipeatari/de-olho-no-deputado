@@ -1,16 +1,18 @@
+# Com SSL
+
 # Redireciona acessos por IP para HTTPS no domínio
 server {
     listen 80 default_server;
     listen [::]:80 default_server;
     server_name _;
-    return 301 https://f12rifas.com.br$request_uri;
+    return 301 https://domain.com.br$request_uri;
 }
 
 # Redireciona HTTP para HTTPS no domínio
 server {
     listen 80;
     listen [::]:80;
-    server_name f12rifas.com.br www.f12rifas.com.br;
+    server_name domain.com.br www.domain.com.br;
 
     root /var/www/html/public;
 

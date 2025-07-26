@@ -15,8 +15,8 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-enable redis \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Instalar Composer (última versão estável)
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+# Instalar Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Instalar Node e npm
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
@@ -42,7 +42,16 @@ RUN chown -R www-data:www-data /var/www/html
 # Evita erro de permissão ao rodar comandos npm como www-data (ex: npm ci, npm run build)
 RUN mkdir -p /var/www/.npm && chown -R www-data:www-data /var/www/.npm
 
+# Cria o diretório de configuração do PsySH e define permissões para o usuário www-data
 RUN mkdir -p /var/www/.config/psysh && chown -R www-data:www-data /var/www/.config
+
+# Cria diretório vendor e libera permissão
+RUN mkdir -p /var/www/html/vendor && \
+    chown -R www-data:www-data /var/www/html
+
+# Cria diretório node_modules e libera permissão
+RUN mkdir -p /var/www/html/node_modules && \
+    chown -R www-data:www-data /var/www/html
 
 # Rodar PHP-FPM como www-data (com UID/GID ajustado)
 USER www-data
