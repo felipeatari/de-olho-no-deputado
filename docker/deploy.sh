@@ -1,6 +1,10 @@
 #!/bin/bash
 
 echo ""
+echo "==> 🛑 Parando o worker do Supervisor..."
+supervisorctl stop laravel-worker || echo "Aviso: não conseguiu parar o worker, talvez não esteja rodando."
+
+echo ""
 echo "==> 🚀 Atualizando repositório..."
 git pull origin main
 
@@ -58,6 +62,10 @@ docker exec docker-app-1 php artisan storage:link
 echo ""
 echo "==> 🔓 Tirando app de manutenção..."
 docker exec docker-app-1 php artisan up
+
+echo ""
+echo "==> ▶️ Iniciando o worker do Supervisor..."
+supervisorctl start laravel-worker || echo "Aviso: não conseguiu iniciar o worker."
 
 echo ""
 echo "✅ Deploy finalizado com sucesso!"
