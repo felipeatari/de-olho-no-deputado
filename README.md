@@ -1,61 +1,138 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🐳 De Olho no Deputado — Ambiente Docker
+Projeto Laravel com front-end integrado via Vite e Tailwind CSS. Este guia mostra como configurar e rodar o ambiente **exclusivamente com Docker** utilizando o Laravel Sail.
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+---
 
-## About Laravel
+## ⚙️ Requisitos
+- Docker  
+- Docker Compose  
+- Make (opcional, mas recomendado)  
+- Git
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🚀 Passo a passo
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 1. Clonar o repositório e configurar o ambiente
+```bash
+git clone https://github.com/felipeatari/de-olho-no-deputado
+cd de-olho-no-deputado
+cp .env.example .env
+```
+> O arquivo `.env` é essencial para configurar o ambiente local. O `.env.example` serve como modelo base e deve ser mantido versionado.
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 2. Instalar dependências PHP
+```bash
+docker run --rm -v $(pwd):/app composer install
+```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 3. Subir o ambiente com Laravel Sail (sem o `-d` o container sobe com os logs)
+```bash
+./vendor/bin/sail up -d
+```
+> Esse comando sobe os containers em segundo plano.
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 4. Gerar a chave da aplicação
+```bash
+./vendor/bin/sail artisan key:generate
+```
+A variável `APP_KEY` será preenchida automaticamente no `.env`.
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### 5. Rodar as migrations
+```bash
+./vendor/bin/sail artisan migrate
+```
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 6. Popular o banco com dados fake (opcional)
+```bash
+./vendor/bin/sail artisan db:seed
+```
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 7. Instalar dependências do front-end
+```bash
+./vendor/bin/sail npm install
+```
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 8. Rodar Tailwind CSS em modo desenvolvimento
+```bash
+./vendor/bin/sail npm run dev
+```
+> Isso irá compilar os assets com Vite + Tailwind CSS e manter a aplicação atualizada em tempo real, recarregando a página automaticamente sempre que você alterar os arquivos (hot reload).
 
-## License
+---
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 9. Gerar build para produção
+```bash
+./vendor/bin/sail npm run build
+```
+> Este comando gera os arquivos otimizados para produção, compilando e minificando CSS e JavaScript. Ao usar este build, o container sobe sem atualizar a página automaticamente — ideal para ambientes de produção.
+
+---
+
+## 🔍 Estrutura esperada no `.env`
+Ajuste as variáveis conforme necessário. Alguns exemplos:
+```env
+APP_NAME=DeOlhoNoDeputado
+APP_ENV=local
+APP_KEY=
+APP_DEBUG=true
+APP_URL=http://localhost
+DB_CONNECTION=mysql
+DB_HOST=mysql
+DB_PORT=3306
+DB_DATABASE=laravel
+DB_USERNAME=sail
+DB_PASSWORD=password
+```
+
+---
+
+## 📂 Acessando a aplicação
+
+### Ambiente de desenvolvimento  
+Acesse no navegador:  
+📍 [`http://localhost`](http://localhost)  
+ou conforme configurado na variável `APP_URL` do `.env`.
+
+### Ambiente de produção  
+Para acessar o projeto em produção, abra o link:  
+📍 [`http://31.97.23.210`](http://31.97.23.210)
+
+---
+
+## 🧰 Comandos úteis com Sail
+```bash
+# Subir os containers
+./vendor/bin/sail up -d
+# Acessar o bash do container
+./vendor/bin/sail shell
+# Parar os containers
+./vendor/bin/sail down
+# Rodar migrations e seed
+./vendor/bin/sail artisan migrate:fresh --seed
+# Ver logs da aplicação
+./vendor/bin/sail logs -f
+# Sobe o container e mantém o Tailwind CSS rodando em modo dev (com atualização automática da página)
+./vendor/bin/sail up -d && ./vendor/bin/sail npm run dev
+# Sobe o container sem atualizar a página (modo produção)
+./vendor/bin/sail up -d && ./vendor/bin/sail npm run build
+```
+
+---
+
+## ✅ Pronto!  
+Seu ambiente Docker com Laravel está configurado. Agora é só começar a codar 🚀
