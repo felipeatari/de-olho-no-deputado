@@ -11,7 +11,10 @@
 
     <header class="bg-green-700 text-white shadow">
         <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-            <h1 class="font-semibold">De Olho No Deputado</h1>
+            <div class="flex items-center">
+                <img width="30" class="mr-2" src="{{ asset('images/logo.png') }}" alt="">
+                <h1 class="font-semibold">De Olho No Deputado</h1>
+            </div>
             <nav>
                 <ul class="flex space-x-4 text-sm font-semibold">
                     <li><a href="{{ route('deputados.home') }}" class="hover:underline">Home</a></li>
