@@ -118,12 +118,12 @@ DB_PASSWORD=password
 
 ### Ambiente de desenvolvimento  
 Acesse no navegador:  
-📍 [`http://localhost`](http://localhost)  
+📍 [`http://localhost`](http://localhost) _(abre em nova aba)_
 ou conforme configurado na variável `APP_URL` do `.env`.
 
 ### Ambiente de produção  
 Para acessar o projeto em produção, abra o link:  
-📍 [`http://31.97.23.210`](http://31.97.23.210)
+📍 [`https://cricode.site`](https://cricode.site) _(abre em nova aba)_
 
 ---
 
