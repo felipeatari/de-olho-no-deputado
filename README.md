@@ -83,6 +83,19 @@ A variável `APP_KEY` será preenchida automaticamente no `.env`.
 
 ---
 
+### 10. Rodar os jobs (filas) no Laravel
+
+Após compilar os assets (passo 8 ou 9), você pode iniciar o processamento dos jobs em fila com:
+
+```bash
+./vendor/bin/sail artisan queue:work --sleep=3 --tries=3
+```
+
+> Esse comando inicia o worker responsável por processar os jobs pendentes da fila padrão. Em ambiente de desenvolvimento, você pode deixar esse processo rodando em segundo plano durante os testes.  
+> Para produção, considere usar `queue:work --daemon` junto com um gerenciador como Supervisor.
+
+---
+
 ## 🔍 Estrutura esperada no `.env`
 Ajuste as variáveis conforme necessário. Alguns exemplos:
 ```env
